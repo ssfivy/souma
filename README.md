@@ -14,9 +14,9 @@ Securely dump system information for later inspection.
 ## TODOs - done
 - grab data from systemd journal and write to dump file
 - add command to extract dump file
+- add metadata to dump file
 
 ## TODOs
-- add metadata to dump file
 - extract code into library
 - add unit tests
 - add CI / CD for tests
