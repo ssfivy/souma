@@ -11,6 +11,13 @@ Securely dump system information for later inspection.
 - Devices behind firewalls / airgaps
 - Python practice for me!
 
+## Quick start
+
+Running test cases:
+```
+python3 -m pytest
+```
+
 ## TODOs - done
 - grab data from systemd journal and write to dump file
 - add command to extract dump file
