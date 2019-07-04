@@ -7,6 +7,8 @@
 import argparse
 
 from souma import hashing
+from souma import journal
+from souma import metadata
 
 # Argument parsing
 ##################
@@ -27,34 +29,28 @@ args = parser.parse_args()
 ##################
 if args.command == 'dump':
     # TODO: Spin off into modules
-    import json
-    import subprocess
     import tarfile
     import tempfile
-    import time
-    cmd = ['journalctl', '--no-pager', '--output=short-iso', '-b -0'] # for now, only dump last boot
-    done = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+    syslog = journal.get_all_today()
 
     sha = hashing.ShaSumFile()
 
+    s = metadata.gen_metadata_v1_str().encode('utf-8')
+
     with tarfile.open(args.file, 'a:') as tf:
         with tempfile.NamedTemporaryFile() as tfd:
-            tfd.write(done.stdout)
+            tfd.write(syslog)
             tfd.flush()
             tf.add(tfd.name, 'syslog.txt')
-            sha.hashbytes(done.stdout, 'syslog.txt')
+            sha.hashbytes(syslog, 'syslog.txt')
 
-    metadata = {}
-    metadata['fileversion'] = 1
-    metadata['creationtime'] = time.time()
     with tarfile.open(args.file, 'a:') as tf:
         with tempfile.NamedTemporaryFile() as tfd:
-            s = json.dumps(metadata, indent=1, sort_keys=True).encode('utf-8')
             tfd.write(s)
             tfd.flush()
             tf.add(tfd.name, 'metadata.json')
             sha.hashbytes(s, 'metadata.json')
-
 
     with tarfile.open(args.file, 'a:') as tf:
         with tempfile.NamedTemporaryFile() as tfd:

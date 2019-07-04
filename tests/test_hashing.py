@@ -12,7 +12,7 @@ def test_hashing():
     filenames = [ os.path.join(tmpdir.name, 'file'+str(x)) for x in range(10) ]
     for fn in filenames:
         with open(fn, 'wb') as fd:
-            fd.write(os.urandom(8*1024))
+            fd.write(os.urandom(67*512))
 
     sha = hashing.ShaSumFile()
     for fn in filenames:
